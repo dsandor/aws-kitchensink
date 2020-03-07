@@ -18,5 +18,8 @@
   },
   "peerDependencies": {
     "aws-sdk": "^2.635.0"
+  },
+  "devDependencies": {
+    "aws-kitchensink-s3": "^1.0.0"
   }
 }
