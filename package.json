@@ -1,6 +1,6 @@
 {
   "name": "aws-kitchensink",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Set of useful utilities for AWS.",
   "main": "index.js",
   "author": "David Sandor",
