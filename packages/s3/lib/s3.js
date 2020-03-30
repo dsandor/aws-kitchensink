@@ -2,8 +2,9 @@
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({ region: 'us-east-1' });
 
-module.exports = S3;
-
+/**
+ * S3 Helper toolkit.
+ */
 class S3 {
   /**
    * gets all the bucket objects recursively.
@@ -13,23 +14,50 @@ class S3 {
    * @return {Promise<any[]|string>}
    */
   static async listBucket(bucketName, prefix, nextToken) {
-  let newList = [];
-  const params = {
+    let newList = [];
+    const params = {
+        Bucket: bucketName,
+        MaxKeys: 1000,
+        ContinuationToken: nextToken,
+        Prefix: prefix,
+      };
+      const results = await s3.listObjectsV2(params).promise();
+
+      if (results.Contents) {
+      newList = newList.concat(results.Contents);
+    }
+
+    if (results.NextContinuationToken) {
+      newList = newList.concat(await S3.listBucket(bucketName, prefix, results.NextContinuationToken));
+    }
+
+    return newList;
+  }
+
+  /**
+   * Gets a JSON object from S3 and parses it to a JSON object.
+   * @param {string} bucketName the S3 bucket name.
+   * @param {string} key - the Key name in S3
+   * @param {string} encoding - default 'utf8'
+   */
+  static async getJSONObject(bucketName, key, encoding = 'utf8') {
+    const params = {
+      Key: key,
       Bucket: bucketName,
-      MaxKeys: 1000,
-      ContinuationToken: nextToken,
-      Prefix: prefix,
     };
-    const results = await s3.listObjectsV2(params).promise();
 
-    if (results.Contents) {
-    newList = newList.concat(results.Contents);
-  }
+    try {
+      const file = await s3.getObject(params).promise();
 
-  if (results.NextContinuationToken) {
-    newList = newList.concat(await listBucket(bucketName, prefix, results.NextContinuationToken));
-  }
+      if (file && file.Body) {
+        return JSON.parse(file.Body.toString(encoding));
+      }
+    } catch (e) {
+      throw new Error(`Failed getting object from S3: ${e.message}`);
+    }
 
-  return newList;
+    throw new Error('No content.');
   }
 }
+
+module.exports = S3;
