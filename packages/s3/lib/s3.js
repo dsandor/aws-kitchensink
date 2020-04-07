@@ -58,6 +58,25 @@ class S3 {
 
     throw new Error('No content.');
   }
+
+  /**
+  * Gets a read stream from S3 object.
+  * @param {string} bucketName the S3 bucket name.
+  * @param {string} key - the Key name in S3
+  * @param {string} encoding - default 'utf8'
+  */
+  static getJSONStream(bucketName, key, encoding = 'utf8') {
+    const params = {
+      Key: key,
+      Bucket: bucketName,
+    };
+
+    try {
+      return s3.getObject(params).createReadStream();
+    } catch (e) {
+      throw new Error(`Failed getting object from S3: ${e.message}`);
+    }
+  }
 }
 
 module.exports = S3;
