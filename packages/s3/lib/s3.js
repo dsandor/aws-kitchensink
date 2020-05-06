@@ -60,6 +60,32 @@ class S3 {
   }
 
   /**
+   * Gets a file as string from S3.
+   * @param {string} bucketName the S3 bucket name.
+   * @param {string} key - the Key name in S3
+   * @param {string} encoding - default 'utf8'
+   */
+  static async getString(bucketName, key, encoding = 'utf8') {
+    const params = {
+      Key: key,
+      Bucket: bucketName,
+    };
+
+    try {
+      const file = await s3.getObject(params).promise();
+
+      if (file && file.Body) {
+        return file.Body.toString(encoding);
+      }
+    } catch (e) {
+      throw new Error(`Failed getting object from S3: ${e.message}`);
+    }
+
+    throw new Error('No content.');
+  }
+
+
+  /**
   * Gets a read stream from S3 object.
   * @param {string} bucketName the S3 bucket name.
   * @param {string} key - the Key name in S3
