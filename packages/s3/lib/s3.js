@@ -60,6 +60,32 @@ class S3 {
   }
 
   /**
+   * Writes a JSON object to S3 bucket.
+   * @param {string} bucketName - The name of the S3 bucket.
+   * @param {string} key - The key of the object (aka: filename)
+   * @param {*} dataObject - A Javascript object that will be stringified / minified and written to S3.
+   */
+  static async putJSONObject(bucketName, key, dataObject) {
+    return S3.putStringObject(bucketName, key, JSON.stringify(dataObject, null, 0));
+  }
+
+  /**
+   * Writes string data to an S3 bucket.
+   * @param {string} bucketName - The name of the S3 bucket.
+   * @param {string} key - The key of the object (aka: filename)
+   * @param {string} dataString - The data to be written in string format.
+   */
+  static async putStringObject(bucketName, key, dataString) {
+    const params = {
+      Bucket: bucketName,
+      Key: key,
+      Body: dataString,
+    };
+
+    return s3.putObject(params).promise();
+  }
+
+  /**
    * Gets a file as string from S3.
    * @param {string} bucketName the S3 bucket name.
    * @param {string} key - the Key name in S3
