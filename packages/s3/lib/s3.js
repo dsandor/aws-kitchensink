@@ -16,19 +16,21 @@ class S3 {
   static async listBucket(bucketName, prefix, nextToken) {
     let newList = [];
     const params = {
-        Bucket: bucketName,
-        MaxKeys: 1000,
-        ContinuationToken: nextToken,
-        Prefix: prefix,
-      };
-      const results = await s3.listObjectsV2(params).promise();
+      Bucket: bucketName,
+      MaxKeys: 1000,
+      ContinuationToken: nextToken,
+      Prefix: prefix,
+    };
+    const results = await s3.listObjectsV2(params).promise();
 
-      if (results.Contents) {
+    if (results.Contents) {
       newList = newList.concat(results.Contents);
     }
 
     if (results.NextContinuationToken) {
-      newList = newList.concat(await S3.listBucket(bucketName, prefix, results.NextContinuationToken));
+      newList = newList.concat(
+        await S3.listBucket(bucketName, prefix, results.NextContinuationToken)
+      );
     }
 
     return newList;
@@ -66,14 +68,20 @@ class S3 {
    * @param {string} permissions - the rights to grant.
    * @param {number} expirationInSeconds - time the url is good for.
    */
-  static async getSignedUrl(bucketName, key, permissions = 'getObject', expirationInSeconds = 60 * 5) {
-    return await s3.getSignedUrl(permissions, {
-      Bucket: bucketName,
-      Key: key,
-      Expires: expirationInSeconds,
-    }).promise();
+  static async getSignedUrl(
+    bucketName,
+    key,
+    permissions = 'getObject',
+    expirationInSeconds = 60 * 5
+  ) {
+    return await s3
+      .getSignedUrlPromise(permissions, {
+        Bucket: bucketName,
+        Key: key,
+        Expires: expirationInSeconds,
+      });
   }
-  
+
   /**
    * Writes a JSON object to S3 bucket.
    * @param {string} bucketName - The name of the S3 bucket.
@@ -81,7 +89,11 @@ class S3 {
    * @param {*} dataObject - A Javascript object that will be stringified / minified and written to S3.
    */
   static async putJSONObject(bucketName, key, dataObject) {
-    return S3.putStringObject(bucketName, key, JSON.stringify(dataObject, null, 0));
+    return S3.putStringObject(
+      bucketName,
+      key,
+      JSON.stringify(dataObject, null, 0)
+    );
   }
 
   /**
@@ -95,6 +107,22 @@ class S3 {
       Bucket: bucketName,
       Key: key,
       Body: dataString,
+    };
+
+    return s3.putObject(params).promise();
+  }
+
+  /**
+   * Writes string data to an S3 bucket.
+   * @param {string} bucketName - The name of the S3 bucket.
+   * @param {string} key - The key of the object (aka: filename)
+   * @param {any} data - The data to be written. Any supported object (see aws docs). String | Buffer ...etc
+   */
+  static async putObject(bucketName, key, data) {
+    const params = {
+      Bucket: bucketName,
+      Key: key,
+      Body: data,
     };
 
     return s3.putObject(params).promise();
@@ -125,13 +153,12 @@ class S3 {
     throw new Error('No content.');
   }
 
-
   /**
-  * Gets a read stream from S3 object.
-  * @param {string} bucketName the S3 bucket name.
-  * @param {string} key - the Key name in S3
-  * @param {string} encoding - default 'utf8'
-  */
+   * Gets a read stream from S3 object.
+   * @param {string} bucketName the S3 bucket name.
+   * @param {string} key - the Key name in S3
+   * @param {string} encoding - default 'utf8'
+   */
   static getJSONStream(bucketName, key, encoding = 'utf8') {
     const params = {
       Key: key,
