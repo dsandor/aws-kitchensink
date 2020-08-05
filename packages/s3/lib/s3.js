@@ -60,6 +60,21 @@ class S3 {
   }
 
   /**
+   * Generates a presigned url for an object in S3. Defaults to getObject permission and 5 minute expiration.
+   * @param {string} bucketName - the name of the s3 bucket
+   * @param {string} key - the key name or file path to the object in s3
+   * @param {string} permissions - the rights to grant.
+   * @param {number} expirationInSeconds - time the url is good for.
+   */
+  static async getSignedUrl(bucketName, key, permissions = 'getObject', expirationInSeconds = 60 * 5) {
+    return await s3.getSignedUrl(permissions, {
+      Bucket: bucketName,
+      Key: key,
+      Expires: expirationInSeconds,
+    }).promise();
+  }
+  
+  /**
    * Writes a JSON object to S3 bucket.
    * @param {string} bucketName - The name of the S3 bucket.
    * @param {string} key - The key of the object (aka: filename)
