@@ -37,6 +37,42 @@ class S3 {
   }
 
   /**
+   * Gets the object metadata as a JSON object.
+   * @param {string} bucketName the S3 bucket name.
+   * @param {string} key - the Key name in S3
+   */
+  static async getMetadata(bucketName, key) {
+    try {
+      const head = await S3.headObject(bucketName, key);
+
+      return head.Metadata;
+    } catch (e) {
+      throw new Error(`Failed getting metadata from S3: ${e.message}`);
+    }
+  }
+
+  /**
+   * Gets the HEAD data about an S3 object.
+   * See: https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#headObject-property
+   * @param {string} bucketName the S3 bucket name.
+   * @param {string} key - the Key name in S3
+   */
+  static async headObject(bucketName, key) {
+    const params = {
+      Key: key,
+      Bucket: bucketName,
+    };
+
+    try {
+      return await s3.headObject(params).promise();
+
+    } catch (e) {
+      throw new Error(`Failed heading object from S3: ${e.message}`);
+    }
+  }
+
+
+  /**
    * Gets a JSON object from S3 and parses it to a JSON object.
    * @param {string} bucketName the S3 bucket name.
    * @param {string} key - the Key name in S3
