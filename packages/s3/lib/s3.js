@@ -65,12 +65,10 @@ class S3 {
 
     try {
       return await s3.headObject(params).promise();
-
     } catch (e) {
       throw new Error(`Failed heading object from S3: ${e.message}`);
     }
   }
-
 
   /**
    * Gets a JSON object from S3 and parses it to a JSON object.
@@ -110,25 +108,26 @@ class S3 {
     permissions = 'getObject',
     expirationInSeconds = 60 * 5
   ) {
-    return await s3
-      .getSignedUrlPromise(permissions, {
-        Bucket: bucketName,
-        Key: key,
-        Expires: expirationInSeconds,
-      });
+    return await s3.getSignedUrlPromise(permissions, {
+      Bucket: bucketName,
+      Key: key,
+      Expires: expirationInSeconds,
+    });
   }
 
   /**
    * Writes a JSON object to S3 bucket.
    * @param {string} bucketName - The name of the S3 bucket.
    * @param {string} key - The key of the object (aka: filename)
+   * @param {string} metadata - The metadata of the object
    * @param {*} dataObject - A Javascript object that will be stringified / minified and written to S3.
    */
-  static async putJSONObject(bucketName, key, dataObject) {
+  static async putJSONObject(bucketName, key, dataObject, metadata) {
     return S3.putStringObject(
       bucketName,
       key,
-      JSON.stringify(dataObject, null, 0)
+      JSON.stringify(dataObject, null, 0),
+      metadata
     );
   }
 
@@ -136,6 +135,7 @@ class S3 {
    * Writes string data to an S3 bucket.
    * @param {string} bucketName - The name of the S3 bucket.
    * @param {string} key - The key of the object (aka: filename)
+   * @param {string} metadata - The metadata of the object
    * @param {string} dataString - The data to be written in string format.
    */
   static async putStringObject(bucketName, key, dataString) {
@@ -143,6 +143,7 @@ class S3 {
       Bucket: bucketName,
       Key: key,
       Body: dataString,
+      Metadata: metadata,
     };
 
     return s3.putObject(params).promise();
