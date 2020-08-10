@@ -119,7 +119,7 @@ class S3 {
    * Writes a JSON object to S3 bucket.
    * @param {string} bucketName - The name of the S3 bucket.
    * @param {string} key - The key of the object (aka: filename)
-   * @param {string} metadata - The metadata of the object
+   * @param {object} metadata - The metadata of the object
    * @param {*} dataObject - A Javascript object that will be stringified / minified and written to S3.
    */
   static async putJSONObject(bucketName, key, dataObject, metadata) {
@@ -135,7 +135,7 @@ class S3 {
    * Writes string data to an S3 bucket.
    * @param {string} bucketName - The name of the S3 bucket.
    * @param {string} key - The key of the object (aka: filename)
-   * @param {string} metadata - The metadata of the object
+   * @param {object} metadata - The metadata of the object
    * @param {string} dataString - The data to be written in string format.
    */
   static async putStringObject(bucketName, key, dataString, metadata) {
@@ -153,7 +153,7 @@ class S3 {
    * Writes string data to an S3 bucket.
    * @param {string} bucketName - The name of the S3 bucket.
    * @param {string} key - The key of the object (aka: filename)
-   * @param {string} metadata - The metadata of the object
+   * @param {object} metadata - The metadata of the object
    * @param {any} data - The data to be written. Any supported object (see aws docs). String | Buffer ...etc
    */
   static async putObject(bucketName, key, data, metadata) {
