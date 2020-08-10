@@ -138,7 +138,7 @@ class S3 {
    * @param {string} metadata - The metadata of the object
    * @param {string} dataString - The data to be written in string format.
    */
-  static async putStringObject(bucketName, key, dataString) {
+  static async putStringObject(bucketName, key, dataString, metadata) {
     const params = {
       Bucket: bucketName,
       Key: key,
@@ -153,13 +153,15 @@ class S3 {
    * Writes string data to an S3 bucket.
    * @param {string} bucketName - The name of the S3 bucket.
    * @param {string} key - The key of the object (aka: filename)
+   * @param {string} metadata - The metadata of the object
    * @param {any} data - The data to be written. Any supported object (see aws docs). String | Buffer ...etc
    */
-  static async putObject(bucketName, key, data) {
+  static async putObject(bucketName, key, data, metadata) {
     const params = {
       Bucket: bucketName,
       Key: key,
       Body: data,
+      Metadata: metadata,
     };
 
     return s3.putObject(params).promise();
