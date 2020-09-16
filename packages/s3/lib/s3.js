@@ -101,17 +101,20 @@ class S3 {
    * @param {string} key - the key name or file path to the object in s3
    * @param {string} permissions - the rights to grant.
    * @param {number} expirationInSeconds - time the url is good for.
+   * @param {object} metadata - key value pair of required metadata to be passed with the request.
    */
   static async getSignedUrl(
     bucketName,
     key,
     permissions = 'getObject',
-    expirationInSeconds = 60 * 5
+    expirationInSeconds = 60 * 5,
+    metadata = {}
   ) {
     return await s3.getSignedUrlPromise(permissions, {
       Bucket: bucketName,
       Key: key,
       Expires: expirationInSeconds,
+      Metadata: metadata,
     });
   }
 
