@@ -10,6 +10,6 @@
     "lerna": "^3.20.2"
   },
   "dependencies": {
-    "aws-sdk": "^2.635.0"
+    "aws-sdk": "^2.753.0"
   }
 }
