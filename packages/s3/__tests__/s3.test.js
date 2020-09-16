@@ -3,5 +3,5 @@
 const s3 = require('..');
 
 describe('s3', () => {
-    it('needs tests');
+    it('needs tests', () => true);
 });

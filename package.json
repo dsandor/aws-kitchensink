@@ -6,8 +6,8 @@
   "author": "David Sandor",
   "license": "MIT",
   "devDependencies": {
-    "jest": "^25.3.0",
-    "lerna": "^3.20.2"
+    "jest": "^26.4.2",
+    "lerna": "^3.22.1"
   },
   "dependencies": {
     "aws-sdk": "^2.753.0"
