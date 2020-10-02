@@ -71,6 +71,26 @@ class S3 {
   }
 
   /**
+   * Gets a S3 object without modification. Pass through to sdk.
+   * @param {string} bucketName the S3 bucket name.
+   * @param {string} key - the Key name in S3
+   */
+  static async getObject(bucketName, key) {
+    const params = {
+      Key: key,
+      Bucket: bucketName,
+    };
+
+    try {
+      const file = await s3.getObject(params).promise();
+
+      return file;
+    } catch (e) {
+      throw new Error(`Failed getting object from S3: ${e.message}`);
+    }
+  }
+
+  /**
    * Gets a JSON object from S3 and parses it to a JSON object.
    * @param {string} bucketName the S3 bucket name.
    * @param {string} key - the Key name in S3
