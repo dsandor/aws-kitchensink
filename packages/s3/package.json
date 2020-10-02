@@ -1,6 +1,6 @@
 {
   "name": "aws-kitchensink-s3",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "> TODO: description",
   "author": "dsandor <david.sandor@gmail.com>",
   "homepage": "",
@@ -20,6 +20,6 @@
     "aws-sdk": "^2.753.0"
   },
   "devDependencies": {
-    "aws-kitchensink-s3": "^1.6.0"
+    "aws-kitchensink-s3": "^1.7.0"
   }
 }
