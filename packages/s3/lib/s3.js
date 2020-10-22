@@ -233,6 +233,13 @@ class S3 {
       throw new Error(`Failed getting object from S3: ${e.message}`);
     }
   }
+
+  /**
+   * Returns the underlying AWS S3 object to allow direct use.
+   */
+  static getS3Instance() {
+    return s3;
+  }
 }
 
 module.exports = S3;
