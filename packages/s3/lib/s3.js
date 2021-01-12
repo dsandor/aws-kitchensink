@@ -57,10 +57,11 @@ class S3 {
    * @param {string} bucketName the S3 bucket name.
    * @param {string} key - the Key name in S3
    */
-  static async headObject(bucketName, key) {
+  static async headObject(bucketName, key, additionalParams = {}) {
     const params = {
       Key: key,
       Bucket: bucketName,
+      ...additionalParams,
     };
 
     try {
@@ -75,10 +76,11 @@ class S3 {
    * @param {string} bucketName the S3 bucket name.
    * @param {string} key - the Key name in S3
    */
-  static async getObject(bucketName, key) {
+  static async getObject(bucketName, key, additionalParams = {}) {
     const params = {
       Key: key,
       Bucket: bucketName,
+      ...additionalParams,
     };
 
     try {
@@ -96,10 +98,11 @@ class S3 {
    * @param {string} key - the Key name in S3
    * @param {string} encoding - default 'utf8'
    */
-  static async getJSONObject(bucketName, key, encoding = 'utf8') {
+  static async getJSONObject(bucketName, key, encoding = 'utf8', additionalParams = {}) {
     const params = {
       Key: key,
       Bucket: bucketName,
+      ...additionalParams,
     };
 
     try {
@@ -128,13 +131,15 @@ class S3 {
     key,
     permissions = 'getObject',
     expirationInSeconds = 60 * 5,
-    metadata = {}
+    metadata = {},
+    additionalParams = {}
   ) {
     return await s3.getSignedUrlPromise(permissions, {
       Bucket: bucketName,
       Key: key,
       Expires: expirationInSeconds,
       Metadata: metadata,
+      ...additionalParams,
     });
   }
 
@@ -145,12 +150,13 @@ class S3 {
    * @param {object} metadata - The metadata of the object
    * @param {*} dataObject - A Javascript object that will be stringified / minified and written to S3.
    */
-  static async putJSONObject(bucketName, key, dataObject, metadata) {
+  static async putJSONObject(bucketName, key, dataObject, metadata, additionalParams = {}) {
     return S3.putStringObject(
       bucketName,
       key,
       JSON.stringify(dataObject, null, 0),
-      metadata
+      metadata,
+      ...additionalParams,
     );
   }
 
@@ -161,12 +167,13 @@ class S3 {
    * @param {object} metadata - The metadata of the object
    * @param {string} dataString - The data to be written in string format.
    */
-  static async putStringObject(bucketName, key, dataString, metadata) {
+  static async putStringObject(bucketName, key, dataString, metadata, additionalParams = {}) {
     const params = {
       Bucket: bucketName,
       Key: key,
       Body: dataString,
       Metadata: metadata,
+      ...additionalParams,
     };
 
     return s3.putObject(params).promise();
@@ -179,12 +186,13 @@ class S3 {
    * @param {object} metadata - The metadata of the object
    * @param {any} data - The data to be written. Any supported object (see aws docs). String | Buffer ...etc
    */
-  static async putObject(bucketName, key, data, metadata) {
+  static async putObject(bucketName, key, data, metadata, additionalParams = {}) {
     const params = {
       Bucket: bucketName,
       Key: key,
       Body: data,
       Metadata: metadata,
+      ...additionalParams,
     };
 
     return s3.putObject(params).promise();
