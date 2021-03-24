@@ -37,6 +37,21 @@ class S3 {
   }
 
   /**
+   * Determines if a key exists in a bucket.
+   * @param {string} bucketName the S3 bucket name.
+   * @param {string} key - the Key name in S3
+   */
+  static async exists(bucketName, key) {
+    try {
+      const head = await S3.headObject(bucketName, key);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
    * Gets the object metadata as a JSON object.
    * @param {string} bucketName the S3 bucket name.
    * @param {string} key - the Key name in S3
